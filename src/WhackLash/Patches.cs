@@ -19,10 +19,10 @@ namespace WhackLash
 	///   <c>EntityAlive</c> method, where UL's equipment prefix skips the original and its postfix
 	///   re-implements the body.
 	///
-	/// Our prefixes go in at <c>Priority.First</c> so they run ahead of UL's, which skip everything
-	/// below them; our postfixes at <c>Priority.Last</c> so they see the state UL's postfix left.
-	/// Postfixes always run, skipped original or not. Without UL the override calls base and both
-	/// sites fire on one hit, so the <c>EntityAlive</c> postfix stands down for humans.
+	/// Both response sites are postfix-only, at <c>Priority.Last</c> so they see the state UL's
+	/// postfix left. Postfixes always run, skipped original or not - which is the whole reason this
+	/// works under UL, where the original never runs at all. Without UL the override calls base and
+	/// both sites fire on one hit, so the <c>EntityAlive</c> postfix stands down for humans.
 	///
 	/// The other two are prefixes on the methods that decide a hit - <c>DamageEntity</c> for the
 	/// damage and <c>CheckDismember</c> for the dismember roll - which UL does not touch for enemies.
@@ -100,17 +100,13 @@ namespace WhackLash
 			}
 
 			_harmony.Patch(_target,
-				prefix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(ResponsePatches), nameof(ResponsePatches.Prefix)))
-				{
-					priority = Priority.First
-				},
 				postfix: new HarmonyMethod(AccessTools.DeclaredMethod(typeof(Patches), _postfixName))
 				{
 					priority = Priority.Last
 				});
 
-			Log.Out(LogPrefix + "Hit hook applied for " + _covers + ": prefix and postfix on " + _name + ".");
-			return "applied - prefix and postfix on " + _name;
+			Log.Out(LogPrefix + "Hit hook applied for " + _covers + ": postfix on " + _name + ".");
+			return "applied - postfix on " + _name;
 		}
 
 		/// <summary>The <c>EntityHuman</c> site: every zombie, under Undead Legacy or not.</summary>

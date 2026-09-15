@@ -13,7 +13,7 @@ takes hits and, once full enough, lets it attack straight through yours and shru
 flinch would cause — for nearly every zombie that happens on the second hit. WhackLash leaves that
 alone until your focus meter reaches the **break point**, 3 points by default. Below it the zombie
 gets tougher exactly as in vanilla, so the hits that build the meter are landed at risk. At it the
-zombie breaks: its pain meter is held down, every hit flinches it for the full animation and it
+zombie breaks: its pain meter is held down, so every hit keeps it slowed and it
 cannot attack through, for as long as you keep the meter up there. With bare fists at the defaults
 that is: hit one flinches, hits two and three the zombie swings back through, hit four breaks it,
 and about four seconds without a hit lets it recover.

@@ -15,7 +15,7 @@ namespace WhackLash
 		/// <summary>
 		/// Whether the vanilla pain meter is held below the point where it starts working for the
 		/// zombie once its focus meter reaches <see cref="BreakPoints"/>. On (the default) means it
-		/// is: a broken zombie flinches for the full animation and cannot attack through. <c>wl break
+		/// is: a broken zombie stays slowed by every hit and cannot attack through. <c>wl break
 		/// off</c> switches this off and leaves the vanilla meter alone throughout.
 		/// </summary>
 		internal static bool NeutralizePainMeter = true;

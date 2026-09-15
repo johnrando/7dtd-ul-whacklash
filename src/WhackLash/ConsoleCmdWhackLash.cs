@@ -479,7 +479,7 @@ namespace WhackLash
 				+ "until the focus meter reaches the break point, 3 by default: below it the zombie "
 				+ "gets tougher exactly as in vanilla and the hits you land to build the meter are "
 				+ "landed at risk; at it the zombie breaks, its pain meter is held down, every hit "
-				+ "flinches it for the full animation and it cannot attack through - for as long as "
+				+ "so every hit keeps it slowed and it cannot attack through - for as long as "
 				+ "you keep the meter up there. 'wl break {points}' sets the break point (0 breaks it "
 				+ "from the first hit); 'wl break off' leaves the vanilla pain meter alone and keeps "
 				+ "only the bonuses here."
