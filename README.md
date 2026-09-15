@@ -188,7 +188,7 @@ client it changes the server's settings, not your own, so edit the settings file
 **Not required** — the mod works on a plain install, and is built to sit alongside UL without
 modifying anything of UL's. UL replaces the method that plays a hit on a zombie with a copy of its
 own, but keeps the pain meter and knockdown maths intact, and this mod hooks around that copy
-rather than into it. Tested against **UL 2.7.32**.
+rather than into it. Tested against **UL 2.7.33**.
 
 ## Limitations
 

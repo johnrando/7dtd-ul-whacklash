@@ -17,6 +17,10 @@ namespace WhackLash
 	{
 		private const string AssemblyName = "UndeadLegacy";
 
+		/// <summary>Newest Undead Legacy build this mod was verified against. Advisory only; the
+		/// <c>info</c> command prints it next to the detected build.</summary>
+		internal const string TestedTo = "2.7.33";
+
 		internal static bool Present;
 
 		internal static string Version = "not detected";
@@ -53,7 +57,7 @@ namespace WhackLash
 			}
 
 			Version = raw;
-			Status = raw;
+			Status = "Detected v" + raw + " / Tested up to v" + TestedTo;
 			Log.Out(Patches.LogPrefix + "Undead Legacy " + raw + " detected (from " + DetectedSource
 				+ "). This mod patches only vanilla types that UL inherits, so no UL code is touched.");
 		}
