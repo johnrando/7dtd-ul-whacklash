@@ -160,6 +160,15 @@ namespace WhackLash
 				return;
 			}
 
+			// The body has just set BeginStunTrigger for the animated fall. The ragdoll disables the
+			// animator before it can consume it, and a trigger left latched replays the fall when the
+			// ragdoll ends - with the stun already Getup, nothing ever ends that second fall.
+			AvatarController avatar = _entity.emodel.avatarController;
+			if (avatar != null)
+			{
+				avatar._resetTrigger(AvatarController.beginStunTriggerHash);
+			}
+
 			_entity.DoRagdoll(_dmResponse);
 			Counters.RagdollsForced++;
 		}

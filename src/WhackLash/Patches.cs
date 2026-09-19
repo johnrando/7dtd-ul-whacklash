@@ -47,6 +47,8 @@ namespace WhackLash
 
 		internal static string DismemberStatus = NotRunYet;
 
+		internal static string StandUpStatus = NotRunYet;
+
 		private static bool applied;
 
 		internal static void Apply()
@@ -82,6 +84,7 @@ namespace WhackLash
 				"EntityAlive.ProcessDamageResponseLocal", nameof(AlivePostfix), "other enemies");
 			ApplyDamage(harmony);
 			ApplyDismember(harmony);
+			ApplyStandUp(harmony);
 
 			Log.Out(LogPrefix + "Vanilla pain meter is " + (Settings.NeutralizePainMeter
 				? "held down from " + Config.Number(Settings.BreakPoints) + " meter points"
@@ -157,6 +160,25 @@ namespace WhackLash
 
 			DismemberStatus = "applied - prefix on EntityAlive.CheckDismember";
 			Log.Out(LogPrefix + "Dismember bonus applied: prefix on EntityAlive.CheckDismember.");
+		}
+
+		private static void ApplyStandUp(Harmony _harmony)
+		{
+			MethodInfo target = AccessTools.DeclaredMethod(typeof(Entity), "PhysicsResume",
+				new[] { typeof(UnityEngine.Vector3), typeof(float) });
+			if (target == null)
+			{
+				StandUpStatus = "NOT APPLIED - Entity.PhysicsResume not found";
+				Log.Warning(LogPrefix + "Stand-up guard NOT applied: Entity.PhysicsResume could not be "
+					+ "found. Everything else still works.");
+				return;
+			}
+
+			_harmony.Patch(target, prefix: new HarmonyMethod(
+				AccessTools.DeclaredMethod(typeof(StandUpPatches), nameof(StandUpPatches.PhysicsResumePrefix))));
+
+			StandUpStatus = "applied - prefix on Entity.PhysicsResume";
+			Log.Out(LogPrefix + "Stand-up guard applied: prefix on Entity.PhysicsResume.");
 		}
 	}
 }

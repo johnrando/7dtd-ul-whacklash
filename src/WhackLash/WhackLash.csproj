@@ -37,6 +37,7 @@
     <Reference Include="Assembly-CSharp" HintPath="$(GameManaged)Assembly-CSharp.dll" Private="false" />
     <Reference Include="LogLibrary" HintPath="$(GameManaged)LogLibrary.dll" Private="false" />
     <Reference Include="UnityEngine.CoreModule" HintPath="$(GameManaged)UnityEngine.CoreModule.dll" Private="false" />
+    <Reference Include="UnityEngine.PhysicsModule" HintPath="$(GameManaged)UnityEngine.PhysicsModule.dll" Private="false" />
     <Reference Include="0Harmony" HintPath="$(BepInExCore)0Harmony.dll" Private="false" />
   </ItemGroup>
 

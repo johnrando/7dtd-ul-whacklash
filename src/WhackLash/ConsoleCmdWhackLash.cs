@@ -192,11 +192,13 @@ namespace WhackLash
 			Line("hit hook (others)", Patches.ResponseAliveStatus);
 			Line("damage patch", Patches.DamageStatus);
 			Line("dismember patch", Patches.DismemberStatus);
+			Line("stand-up patch", Patches.StandUpStatus);
 			Line("hits", Counters.HitsCounted + " counted, " + Counters.HitsIgnored + " ignored");
 			Line("bonus damage dealt", Counters.BonusDamage.ToString());
 			Line("knockdown added", Counters.StunAdded + " points of build-up");
 			Line("dismember boosted", Counters.DismemberBoosted + " rolls");
 			Line("ragdolls forced", Counters.RagdollsForced.ToString());
+			Line("stand-ups lifted", Counters.StandUpsLifted + " out of the ground");
 			Line("pain meter clamps", Counters.PainClamped.ToString());
 			Line("doors", Counters.DoorProcs + " slams handed over, " + Counters.DoorKnockdowns + " floored");
 			Line("peak meter seen", Config.Number(FocusMeter.Peak) + " of " + Config.Number(Settings.Cap));

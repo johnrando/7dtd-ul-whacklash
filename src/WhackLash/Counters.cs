@@ -25,6 +25,9 @@ namespace WhackLash
 		/// <summary>Knockdowns turned into ragdolls.</summary>
 		internal static int RagdollsForced;
 
+		/// <summary>Enemies that would have stood up inside the ground and were put on top of it.</summary>
+		internal static int StandUpsLifted;
+
 		/// <summary>Times the vanilla pain meter was held down.</summary>
 		internal static int PainClamped;
 
@@ -42,6 +45,7 @@ namespace WhackLash
 			StunAdded = 0;
 			DismemberBoosted = 0;
 			RagdollsForced = 0;
+			StandUpsLifted = 0;
 			PainClamped = 0;
 			DoorProcs = 0;
 			DoorKnockdowns = 0;
