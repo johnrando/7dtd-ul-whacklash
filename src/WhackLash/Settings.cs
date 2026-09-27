@@ -64,13 +64,13 @@ namespace WhackLash
 		/// Once the enemy is broken: chance a straight-on hit is played as a hit from the side,
 		/// percent per meter point. The flinch and any knockdown that hit deals go sideways.
 		/// </summary>
-		internal static float SidePercent = 8f;
+		internal static float SidePercent = 2f;
 
 		/// <summary>
 		/// Once the enemy is broken: chance a hit that would only flinch drops the enemy to a
 		/// knee sideways instead, percent per meter point.
 		/// </summary>
-		internal static float SideFallPercent = 5f;
+		internal static float SideFallPercent = 1f;
 
 		/// <summary>
 		/// Chance a door slammed on a zombie knocks it down, percent per meter point. Only reachable

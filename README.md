@@ -81,7 +81,7 @@ WhackLash is ON
   wl cap {points}         : meter tops out at 10 points
   wl decay {per sec}      : meter drains 0.2 points per second
   wl bonus {s} {d} {h} {r}: per point +2% knockdown, +2% dismember, +1% damage, 2% ragdoll on knockdown
-  wl side {flinch} {fall} : once broken, per point 8% hit from the side, 5% dropped to a knee sideways
+  wl side {flinch} {fall} : once broken, per point 2% hit from the side, 1% dropped to a knee sideways
   wl door {pct} {min}     : a slammed door floors a zombie 10% per point, from 1 point up
   wl flavor ds            : [ >on< | off ]   - DoorSlammer: a slammed door can floor a zombie you have been working on
 ```
@@ -147,8 +147,8 @@ what a first run starts from:
 | dismember chance bonus | +2% per point |
 | damage bonus | +1% per point |
 | ragdoll on knockdown | 2% per point |
-| hit from the side, once broken | 8% per point |
-| sideways drop to a knee, once broken | 5% per point |
+| hit from the side, once broken | 2% per point |
+| sideways drop to a knee, once broken | 1% per point |
 | door knockdown (DoorSlammer) | 10% per point, from 1 point |
 | mod interactions | on |
 
@@ -180,8 +180,8 @@ bonus.stun          = 2        # wl bonus {stun} {dismember} {damage} {ragdoll}
 bonus.dismember     = 2        # wl bonus {stun} {dismember} {damage} {ragdoll}
 bonus.damage        = 1        # wl bonus {stun} {dismember} {damage} {ragdoll}
 bonus.ragdoll       = 2        # wl bonus {stun} {dismember} {damage} {ragdoll}
-side.flinch         = 8        # wl side {flinch} {fall} - once broken, a straight-on hit played from the side
-side.fall           = 5        # wl side {flinch} {fall} - once broken, a flinch becomes a sideways drop to a knee
+side.flinch         = 2        # wl side {flinch} {fall} - once broken, a straight-on hit played from the side
+side.fall           = 1        # wl side {flinch} {fall} - once broken, a flinch becomes a sideways drop to a knee
 door.percent        = 10       # wl door {pct} {min}
 door.min            = 1        # wl door {pct} {min}
 flavor.doorslammer  = on       # wl flavor ds
