@@ -16,14 +16,26 @@ namespace WhackLash
 	/// Every machine keeps its own copy. Hits reach clients through the same damage packets the
 	/// server processes, so the copies agree to within network latency, which is all the payoffs
 	/// need. Main thread only; no locking.
+	///
+	/// Each entry also banks the enemy's vanilla pain resistance while the enemy is broken: the
+	/// value the game's own meter would hold if the clamp were not pinning it at 0.99 between
+	/// hits. It drains at the game's fixed rate, 0.01 a tick, and is put back on the enemy just
+	/// before each hit is played so the flinch is the length vanilla would have chosen. See
+	/// <see cref="ResponsePatches"/> for why.
 	/// </summary>
 	internal static class FocusMeter
 	{
+		/// <summary>The vanilla pain meter's drain, 0.01 a tick at 20 ticks a second (<c>EntityAlive.OnUpdateLive</c>).</summary>
+		private const float PainDecayPerSecond = 0.2f;
+
 		private struct State
 		{
 			internal float Value;
 
-			/// <summary><see cref="Time.time"/> when Value was written.</summary>
+			/// <summary>Banked vanilla pain resistance, 0 when nothing is banked.</summary>
+			internal float Pain;
+
+			/// <summary><see cref="Time.time"/> when Value and Pain were written.</summary>
 			internal float Stamp;
 		}
 
@@ -54,6 +66,34 @@ namespace WhackLash
 			return value > 0f ? value : 0f;
 		}
 
+		/// <summary>The banked pain resistance as it stands now, zero if none or it has drained.</summary>
+		internal static float GetPain(int _entityId)
+		{
+			if (!meters.TryGetValue(_entityId, out State state) || state.Pain <= 0f)
+			{
+				return 0f;
+			}
+			float pain = state.Pain - (Time.time - state.Stamp) * PainDecayPerSecond;
+			return pain > 0f ? pain : 0f;
+		}
+
+		/// <summary>
+		/// Banks the enemy's pain resistance, or clears it with 0. The meter itself is carried
+		/// over as it stands now, so this can be written before or after <see cref="Add"/>.
+		/// </summary>
+		internal static void SetPain(int _entityId, float _pain)
+		{
+			if (_pain <= 0f)
+			{
+				if (meters.TryGetValue(_entityId, out State state) && state.Pain > 0f)
+				{
+					meters[_entityId] = new State { Value = Get(_entityId), Pain = 0f, Stamp = Time.time };
+				}
+				return;
+			}
+			Write(_entityId, Get(_entityId), _pain);
+		}
+
 		/// <summary>Adds one hit's weight, capped. A nonsense result (a NaN from a bad setting) resets to zero.</summary>
 		internal static void Add(int _entityId, float _weight)
 		{
@@ -67,7 +107,7 @@ namespace WhackLash
 				value = 0f;
 			}
 
-			meters[_entityId] = new State { Value = value, Stamp = Time.time };
+			Write(_entityId, value, GetPain(_entityId));
 			if (value > Peak)
 			{
 				Peak = value;
@@ -77,6 +117,11 @@ namespace WhackLash
 			{
 				Prune();
 			}
+		}
+
+		private static void Write(int _entityId, float _value, float _pain)
+		{
+			meters[_entityId] = new State { Value = _value, Pain = _pain, Stamp = Time.time };
 		}
 
 		/// <summary>The enemy is dead; whatever it had built no longer matters.</summary>

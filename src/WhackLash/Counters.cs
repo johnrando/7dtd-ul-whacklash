@@ -31,6 +31,15 @@ namespace WhackLash
 		/// <summary>Times the vanilla pain meter was held down.</summary>
 		internal static int PainClamped;
 
+		/// <summary>Hits where the banked pain resistance was put back before the flinch was chosen.</summary>
+		internal static int PainRestored;
+
+		/// <summary>Straight-on hits on a broken enemy played as hits from the side.</summary>
+		internal static int SideFlinches;
+
+		/// <summary>Flinches on a broken enemy turned into a sideways drop to a knee.</summary>
+		internal static int SideFalls;
+
 		/// <summary>Door slams DoorSlammer handed over.</summary>
 		internal static int DoorProcs;
 
@@ -47,6 +56,9 @@ namespace WhackLash
 			RagdollsForced = 0;
 			StandUpsLifted = 0;
 			PainClamped = 0;
+			PainRestored = 0;
+			SideFlinches = 0;
+			SideFalls = 0;
 			DoorProcs = 0;
 			DoorKnockdowns = 0;
 			FocusMeter.Peak = 0f;

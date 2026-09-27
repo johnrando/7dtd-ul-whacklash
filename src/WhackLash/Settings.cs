@@ -43,28 +43,40 @@ namespace WhackLash
 		internal static float WeightGun = 0.25f;
 
 		/// <summary>The meter never holds more than this many points.</summary>
-		internal static float Cap = 5f;
+		internal static float Cap = 10f;
 
 		/// <summary>Points the meter loses per second, from the moment of the last hit.</summary>
 		internal static float DecayPerSecond = 0.2f;
 
 		/// <summary>Extra knockdown build-up per hit, percent of the hit's damage per meter point.</summary>
-		internal static float StunPercent = 20f;
+		internal static float StunPercent = 2f;
 
 		/// <summary>Dismember chance bonus, percent per meter point.</summary>
-		internal static float DismemberPercent = 15f;
+		internal static float DismemberPercent = 2f;
 
 		/// <summary>Damage bonus, percent per meter point.</summary>
-		internal static float DamagePercent = 5f;
+		internal static float DamagePercent = 1f;
 
 		/// <summary>Chance a knockdown becomes a ragdoll, percent per meter point.</summary>
-		internal static float RagdollPercent = 15f;
+		internal static float RagdollPercent = 2f;
+
+		/// <summary>
+		/// Once the enemy is broken: chance a straight-on hit is played as a hit from the side,
+		/// percent per meter point. The flinch and any knockdown that hit deals go sideways.
+		/// </summary>
+		internal static float SidePercent = 8f;
+
+		/// <summary>
+		/// Once the enemy is broken: chance a hit that would only flinch drops the enemy to a
+		/// knee sideways instead, percent per meter point.
+		/// </summary>
+		internal static float SideFallPercent = 5f;
 
 		/// <summary>
 		/// Chance a door slammed on a zombie knocks it down, percent per meter point. Only reachable
 		/// through DoorSlammer with flavor on in both mods. 0 switches it off.
 		/// </summary>
-		internal static float DoorPercent = 20f;
+		internal static float DoorPercent = 10f;
 
 		/// <summary>Meter points a zombie needs before a slammed door can floor it.</summary>
 		internal static float DoorMinPoints = 1f;

@@ -54,6 +54,10 @@ namespace WhackLash
 				SetBonus(_params);
 				return;
 
+			case "side":
+				SetSide(_params);
+				return;
+
 			case "door":
 				SetDoor(_params);
 				return;
@@ -73,7 +77,7 @@ namespace WhackLash
 
 			default:
 				Output("Unknown option '" + _params[0]
-					+ "'. Try: wl [on|off|break|zombies|animals|weights|cap|decay|bonus|door|flavor {mod}|info|reset]");
+					+ "'. Try: wl [on|off|break|zombies|animals|weights|cap|decay|bonus|side|door|flavor {mod}|info|reset]");
 				return;
 			}
 		}
@@ -89,6 +93,7 @@ namespace WhackLash
 			Line("wl cap {points}", CapLine());
 			Line("wl decay {per sec}", DecayLine());
 			Line("wl bonus {s} {d} {h} {r}", BonusLine());
+			Line("wl side {flinch} {fall}", SideLine());
 			Line("wl door {pct} {min}", FlavorInterop.DoorStatus());
 			FlavorLines();
 		}
@@ -199,7 +204,8 @@ namespace WhackLash
 			Line("dismember boosted", Counters.DismemberBoosted + " rolls");
 			Line("ragdolls forced", Counters.RagdollsForced.ToString());
 			Line("stand-ups lifted", Counters.StandUpsLifted + " out of the ground");
-			Line("pain meter clamps", Counters.PainClamped.ToString());
+			Line("pain meter clamps", Counters.PainClamped + " held down, " + Counters.PainRestored + " put back for the hit");
+			Line("side reactions", Counters.SideFlinches + " hits turned sideways, " + Counters.SideFalls + " dropped to a knee");
 			Line("doors", Counters.DoorProcs + " slams handed over, " + Counters.DoorKnockdowns + " floored");
 			Line("peak meter seen", Config.Number(FocusMeter.Peak) + " of " + Config.Number(Settings.Cap));
 			Line("live meters", FocusMeter.LiveCount.ToString());
@@ -304,6 +310,28 @@ namespace WhackLash
 			Settings.RagdollPercent = ragdoll;
 			Config.Save();
 			Output("Bonus: " + BonusLine());
+		}
+
+		private static void SetSide(List<string> _params)
+		{
+			if (_params.Count != 3)
+			{
+				Output("Usage: wl side {flinch} {fall} - percent per point once the zombie is broken, currently: "
+					+ SideLine() + ". Flinch is the chance a straight-on hit is played as one from the side; "
+					+ "fall is the chance a hit that would only flinch drops the zombie to a knee sideways. 0 switches either off.");
+				return;
+			}
+
+			if (!TryMeasure(_params[1], "side flinch chance", out float flinch)
+				|| !TryMeasure(_params[2], "side fall chance", out float fall))
+			{
+				return;
+			}
+
+			Settings.SidePercent = flinch;
+			Settings.SideFallPercent = fall;
+			Config.Save();
+			Output("Side: " + SideLine());
 		}
 
 		private static void SetDoor(List<string> _params)
@@ -446,6 +474,12 @@ namespace WhackLash
 				+ Config.Number(Settings.RagdollPercent) + "% ragdoll on knockdown";
 		}
 
+		private static string SideLine()
+		{
+			return "once broken, per point " + Config.Number(Settings.SidePercent) + "% hit from the side, "
+				+ Config.Number(Settings.SideFallPercent) + "% dropped to a knee sideways";
+		}
+
 		private static void Output(string _line)
 		{
 			SdtdConsole.Instance.Output(_line);
@@ -464,7 +498,7 @@ namespace WhackLash
 		public override string getHelp()
 		{
 			return "Usage: wl [on|off|break {points}|off|zombies on|off|animals on|off|weights {m} {a} {g}"
-				+ "|cap {points}|decay {per sec}|bonus {s} {d} {h} {r}|door {pct} {min}|flavor {mod}"
+				+ "|cap {points}|decay {per sec}|bonus {s} {d} {h} {r}|side {flinch} {fall}|door {pct} {min}|flavor {mod}"
 				+ "|flavor on|off|info|reset]"
 				+ "\r\n\r\nEvery enemy you hit gets a focus meter. Each hit you land adds to it - a "
 				+ "melee swing a full point, an arrow, bolt or thrown weapon half, a bullet or "
@@ -480,11 +514,14 @@ namespace WhackLash
 				+ "through yours and shrug off the slow that a flinch would cause. That stays in force "
 				+ "until the focus meter reaches the break point, 3 by default: below it the zombie "
 				+ "gets tougher exactly as in vanilla and the hits you land to build the meter are "
-				+ "landed at risk; at it the zombie breaks, its pain meter is held down, every hit "
-				+ "so every hit keeps it slowed and it cannot attack through - for as long as "
-				+ "you keep the meter up there. 'wl break {points}' sets the break point (0 breaks it "
-				+ "from the first hit); 'wl break off' leaves the vanilla pain meter alone and keeps "
-				+ "only the bonuses here."
+				+ "landed at risk; at it the zombie breaks, its pain meter is held down, so every hit "
+				+ "keeps it slowed and it cannot attack through - for as long as you keep the meter "
+				+ "up there. The flinch itself stays the length vanilla would have played: the pain "
+				+ "the clamp takes off is banked, drains at vanilla's rate and is put back for each "
+				+ "hit, so a broken zombie does not fall back into the long stumble after every "
+				+ "knockdown. 'wl break {points}' sets the break point (0 breaks it from the first "
+				+ "hit); 'wl break off' leaves the vanilla pain meter alone and keeps only the "
+				+ "bonuses here."
 				+ "\r\n\r\n'wl' on its own prints the settings and changes nothing - it is the status "
 				+ "read, so it is safe to type when you only want to look. Each line names the "
 				+ "command that changes it, so the settings block is also the menu."
@@ -502,21 +539,28 @@ namespace WhackLash
 				+ "thrown; gun covers guns, launchers and explosives. A thrown spear carries the same "
 				+ "item as a held one and counts as melee. Turrets, drones, traps, vehicles, and burns "
 				+ "or bleeds count for nothing and earn nothing, whoever set them up."
-				+ "\r\n\r\n'wl cap {points}' is the most the meter holds, 5 by default, and 'wl decay "
+				+ "\r\n\r\n'wl cap {points}' is the most the meter holds, 10 by default, and 'wl decay "
 				+ "{per sec}' is how fast it drains, 0.2 a second by default, the same rate as the vanilla pain meter - "
-				+ "so a full meter is gone 25 seconds after the last hit."
+				+ "so a full meter is gone 50 seconds after the last hit."
 				+ "\r\n\r\n'wl bonus {stun} {dismember} {damage} {ragdoll}' sets the four payoffs, each "
-				+ "a percentage per meter point: 20, 15, 5 and 15 by default. Stun is extra knockdown "
+				+ "a percentage per meter point: 2, 2, 1 and 2 by default. Stun is extra knockdown "
 				+ "build-up per hit, as a share of the hit's damage, split between body and legs the way "
 				+ "the game splits it. Dismember multiplies the weapon's dismember chance - and a head "
 				+ "dismember is a kill, so this one is strong. Damage scales the hit itself, before "
 				+ "armour. Ragdoll is the chance a knockdown the game would have played as an animated "
-				+ "fall becomes a physics ragdoll instead. At a full meter of 5 that is double the "
-				+ "knockdown build-up, 1.75x the dismember chance, 1.25x damage and a 75% ragdoll. 0 "
-				+ "switches any one of them off."
+				+ "fall becomes a physics ragdoll instead. At a full meter of 10 that is +20% "
+				+ "knockdown build-up, 1.2x the dismember chance, 1.1x damage and a 20% ragdoll: small "
+				+ "steps, many of them. 0 switches any one of them off."
+				+ "\r\n\r\n'wl side {flinch} {fall}' is what a broken zombie does instead of stumbling "
+				+ "at you, each a percentage per meter point: 8 and 5 by default. Every hit carries "
+				+ "the direction it came from and the game plays the flinch, the fall and the kneel to "
+				+ "match; flinch is the chance a straight-on hit is played as one from the side, so "
+				+ "the zombie staggers or falls sideways, and fall is the chance a hit that would only "
+				+ "flinch drops it to a knee sideways instead, for the zombie's own kneel duration. "
+				+ "Both apply only once the zombie is broken. 0 switches either off."
 				+ "\r\n\r\n'wl door {pct} {min}' is the DoorSlammer interaction: a door slammed on a "
 				+ "zombie whose meter is at least {min} points knocks it down {pct} percent per point, "
-				+ "20 and 1 by default, so a zombie you have hit four times goes down four slams in "
+				+ "10 and 1 by default, so a zombie you have hit four times goes down two slams in "
 				+ "five. The ragdoll roll above applies to that knockdown too. The slam then counts as "
 				+ "one melee hit. Needs DoorSlammer installed and the flavor switch on in both mods."
 				+ "\r\n\r\n'wl flavor' lists the extra behaviour supported mods offer, one switch per "

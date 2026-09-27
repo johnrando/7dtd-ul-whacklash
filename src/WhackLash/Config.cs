@@ -149,6 +149,8 @@ namespace WhackLash
 			Setting(text, "bonus.dismember", Number(Settings.DismemberPercent), "wl bonus {stun} {dismember} {damage} {ragdoll}");
 			Setting(text, "bonus.damage", Number(Settings.DamagePercent), "wl bonus {stun} {dismember} {damage} {ragdoll}");
 			Setting(text, "bonus.ragdoll", Number(Settings.RagdollPercent), "wl bonus {stun} {dismember} {damage} {ragdoll}");
+			Setting(text, "side.flinch", Number(Settings.SidePercent), "wl side {flinch} {fall} - once broken, a straight-on hit played from the side");
+			Setting(text, "side.fall", Number(Settings.SideFallPercent), "wl side {flinch} {fall} - once broken, a flinch becomes a sideways drop to a knee");
 			Setting(text, "door.percent", Number(Settings.DoorPercent), "wl door {pct} {min}");
 			Setting(text, "door.min", Number(Settings.DoorMinPoints), "wl door {pct} {min}");
 			foreach (string label in FlavorSwitches.Labels)
@@ -238,6 +240,10 @@ namespace WhackLash
 				return LoadMeasure(_value, ref Settings.DamagePercent);
 			case "bonus.ragdoll":
 				return LoadMeasure(_value, ref Settings.RagdollPercent);
+			case "side.flinch":
+				return LoadMeasure(_value, ref Settings.SidePercent);
+			case "side.fall":
+				return LoadMeasure(_value, ref Settings.SideFallPercent);
 			case "door.percent":
 				return LoadMeasure(_value, ref Settings.DoorPercent);
 			case "door.min":

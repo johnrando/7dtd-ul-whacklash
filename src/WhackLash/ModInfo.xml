@@ -4,6 +4,6 @@
 	<DisplayName value="WhackLash" />
 	<Description value="Keep hitting the same zombie and it starts to give: a focus meter builds per enemy with every melee, bow or gun hit you land and drains when you stop, and while it is up your hits do more damage, knock it down sooner, dismember more often and can send a knockdown into a ragdoll. Also switches off the vanilla pain meter that lets a zombie attack straight through your hits. Zombies by default, hostile animals optionally. Everything tunable in-game; compatible with Undead Legacy." />
 	<Author value="John Rando" />
-	<Version value="0.0.0.3" />
+	<Version value="0.0.0.4" />
 	<Website value="" />
 </xml>

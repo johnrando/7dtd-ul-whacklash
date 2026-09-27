@@ -14,9 +14,10 @@ flinch would cause — for nearly every zombie that happens on the second hit. W
 alone until your focus meter reaches the **break point**, 3 points by default. Below it the zombie
 gets tougher exactly as in vanilla, so the hits that build the meter are landed at risk. At it the
 zombie breaks: its pain meter is held down, so every hit keeps it slowed and it
-cannot attack through, for as long as you keep the meter up there. With bare fists at the defaults
-that is: hit one flinches, hits two and three the zombie swings back through, hit four breaks it,
-and about four seconds without a hit lets it recover.
+cannot attack through, for as long as you keep the meter up there — and its hits can start going
+sideways, a stagger or a drop to a knee away from you instead of the stumble at you. With bare
+fists at the defaults that is: hit one flinches, hits two and three the zombie swings back through,
+hit four breaks it, and about four seconds without a hit lets it recover.
 
 ## Installing
 
@@ -43,18 +44,18 @@ A hit adds points by what landed it:
 | bullet, launcher, explosive | 0.25 |
 | turret, drone, trap, vehicle, burn, bleed, another zombie | 0 — earns nothing, builds nothing |
 
-The meter holds at most 5 points and drains 0.2 a second, the same rate as the game's own pain
-meter, so a full meter is gone 25 seconds after the last hit. Every bonus is a percentage **per point**, read off the meter as it stood
+The meter holds at most 10 points and drains 0.2 a second, the same rate as the game's own pain
+meter, so a full meter is gone 50 seconds after the last hit. Every bonus is a percentage **per point**, read off the meter as it stood
 *before* the hit, so the first hit of a chain earns nothing and every hit after it earns off the
 ones before.
 
-Worked example: three quick machete hits. The first lands plain and puts the meter at 1. The
-second, at 1 point, does +5% damage, builds +20% more towards a knockdown, and rolls dismember at
-1.15x. The third, at 2 points, is +10%, +40%, 1.3x, and if it knocks the zombie down there is a 30%
-chance that knockdown is a ragdoll. Stop for fifteen seconds and you are back to the first hit.
+Worked example: five quick machete hits. The first lands plain and puts the meter at 1. The
+second, at 1 point, does +1% damage, builds +2% more towards a knockdown, and rolls dismember at
+1.02x. The fifth, at 4 points, is +4%, +8%, 1.08x, and if it knocks the zombie down there is an 8%
+chance that knockdown is a ragdoll. Stop for twenty seconds and you are back to the first hit.
 
-At a full meter the defaults come to double knockdown build-up, 1.75x dismember chance, 1.25x
-damage and a 75% ragdoll.
+At a full meter of 10 the defaults come to +20% knockdown build-up, 1.2x dismember chance, +10%
+damage and a 20% ragdoll. Small steps, many of them: the meter is there to be kept up, not spiked.
 
 **A head dismember is a kill.** The dismember bonus multiplies the weapon's own dismember chance,
 and the game treats a decapitation as fatal, so on a weapon with a real head-dismember chance this
@@ -77,10 +78,11 @@ WhackLash is ON
   wl zombies on|off       : [ >on< | off ]   - zombies, zombie dogs and vultures build the meter
   wl animals on|off       : [ on | >off< ]   - hostile animals build the meter too
   wl weights {m} {a} {g}  : 1 melee / 0.5 archery+thrown / 0.25 gun+launcher per hit
-  wl cap {points}         : meter tops out at 5 points
+  wl cap {points}         : meter tops out at 10 points
   wl decay {per sec}      : meter drains 0.2 points per second
-  wl bonus {s} {d} {h} {r}: per point +20% knockdown, +15% dismember, +5% damage, 15% ragdoll on knockdown
-  wl door {pct} {min}     : a slammed door floors a zombie 20% per point, from 1 point up
+  wl bonus {s} {d} {h} {r}: per point +2% knockdown, +2% dismember, +1% damage, 2% ragdoll on knockdown
+  wl side {flinch} {fall} : once broken, per point 8% hit from the side, 5% dropped to a knee sideways
+  wl door {pct} {min}     : a slammed door floors a zombie 10% per point, from 1 point up
   wl flavor ds            : [ >on< | off ]   - DoorSlammer: a slammed door can floor a zombie you have been working on
 ```
 
@@ -92,7 +94,17 @@ toggling, so the command reads the same whichever state you were in and repeatin
 `wl break {points}` sets the break point: the meter points a zombie needs before its pain meter is
 held down and it stops attacking through your hits. 3 by default; 0 breaks it from the first hit,
 which is a stun-lock, so use that knowingly. `wl break off` leaves the vanilla pain meter alone
-throughout and keeps only the bonuses.
+throughout and keeps only the bonuses. Holding the meter down does not lengthen the flinch: the
+pain the clamp takes off is banked, drains at vanilla's rate, and is put back for each hit, so a
+broken zombie flinches for exactly as long as vanilla would have had it flinch, and does not fall
+back into the long forward stumble after every knockdown, ragdoll or reload.
+
+`wl side {flinch} {fall}` is what a broken zombie does instead of stumbling at you, each a
+percentage per meter point. Every hit carries the direction it came from and the game plays the
+flinch, the fall and the kneel to match. *Flinch* is the chance a straight-on hit is played as one
+from the side, so the zombie staggers or falls sideways; *fall* is the chance a hit that would only
+flinch drops it to a knee sideways instead, for the zombie's own kneel duration. Both apply only
+once the zombie is broken. 0 switches either off.
 
 `wl bonus` takes the four payoffs as percentages per meter point: knockdown build-up (as a share of
 the hit's damage), dismember chance, damage, and the chance a knockdown becomes a ragdoll. 0
@@ -107,8 +119,8 @@ them. `wl reset` zeroes the counters; live meters are left alone.
 
 With [DoorSlammer](../ul-doorslammer) installed, a door slammed on a zombie you have been working
 on can knock it down. The door reads the zombie's meter as it stood before the slam and rolls
-`wl door`'s percentage per point — 20% per point from 1 point up by default, so a zombie you have
-hit four times goes down four slams in five. The ragdoll roll applies to that knockdown too. The
+`wl door`'s percentage per point — 10% per point from 1 point up by default, so a zombie you have
+hit four times goes down two slams in five. The ragdoll roll applies to that knockdown too. The
 slam then counts as one melee hit on the meter. A knockdown deals no damage and is credited to
 nobody.
 
@@ -129,13 +141,15 @@ what a first run starts from:
 | zombies take part | on |
 | hostile animals take part | off |
 | points per hit: melee / archery+thrown / gun+launcher | 1 / 0.5 / 0.25 |
-| meter cap | 5 points |
+| meter cap | 10 points |
 | decay | 0.2 points per second |
-| knockdown build-up bonus | +20% per point |
-| dismember chance bonus | +15% per point |
-| damage bonus | +5% per point |
-| ragdoll on knockdown | 15% per point |
-| door knockdown (DoorSlammer) | 20% per point, from 1 point |
+| knockdown build-up bonus | +2% per point |
+| dismember chance bonus | +2% per point |
+| damage bonus | +1% per point |
+| ragdoll on knockdown | 2% per point |
+| hit from the side, once broken | 8% per point |
+| sideways drop to a knee, once broken | 5% per point |
+| door knockdown (DoorSlammer) | 10% per point, from 1 point |
 | mod interactions | on |
 
 ## Settings file
@@ -160,13 +174,15 @@ targets.animals     = off      # wl animals on|off
 weight.melee        = 1        # wl weights {melee} {archery} {gun}
 weight.archery      = 0.5      # wl weights {melee} {archery} {gun} - bows, crossbows, thrown
 weight.gun          = 0.25     # wl weights {melee} {archery} {gun} - guns, launchers, explosives
-cap                 = 5        # wl cap {points}
+cap                 = 10       # wl cap {points}
 decay               = 0.2      # wl decay {points per second}
-bonus.stun          = 20       # wl bonus {stun} {dismember} {damage} {ragdoll}
-bonus.dismember     = 15       # wl bonus {stun} {dismember} {damage} {ragdoll}
-bonus.damage        = 5        # wl bonus {stun} {dismember} {damage} {ragdoll}
-bonus.ragdoll       = 15       # wl bonus {stun} {dismember} {damage} {ragdoll}
-door.percent        = 20       # wl door {pct} {min}
+bonus.stun          = 2        # wl bonus {stun} {dismember} {damage} {ragdoll}
+bonus.dismember     = 2        # wl bonus {stun} {dismember} {damage} {ragdoll}
+bonus.damage        = 1        # wl bonus {stun} {dismember} {damage} {ragdoll}
+bonus.ragdoll       = 2        # wl bonus {stun} {dismember} {damage} {ragdoll}
+side.flinch         = 8        # wl side {flinch} {fall} - once broken, a straight-on hit played from the side
+side.fall           = 5        # wl side {flinch} {fall} - once broken, a flinch becomes a sideways drop to a knee
+door.percent        = 10       # wl door {pct} {min}
 door.min            = 1        # wl door {pct} {min}
 flavor.doorslammer  = on       # wl flavor ds
 ```
@@ -188,7 +204,12 @@ client it changes the server's settings, not your own, so edit the settings file
 **Not required** — the mod works on a plain install, and is built to sit alongside UL without
 modifying anything of UL's. UL replaces the method that plays a hit on a zombie with a copy of its
 own, but keeps the pain meter and knockdown maths intact, and this mod hooks around that copy
-rather than into it. Tested against **UL 2.7.33**.
+rather than into it. Tested against **UL 2.7.36**.
+
+One UL interaction to know about: UL rolls a rage on every hit a zombie takes, with a chance that
+scales with the hit's damage, and a raging zombie runs at you. The damage bonus here raises that
+roll along with the damage, up to a tenth more at a full meter. If broken zombies seem to charge
+more than you would like, `wl bonus` with the damage figure lowered is the knob.
 
 ## Limitations
 
