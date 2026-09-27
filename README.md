@@ -117,7 +117,7 @@ them. `wl reset` zeroes the counters; live meters are left alone.
 
 ## DoorSlammer
 
-With [DoorSlammer](../ul-doorslammer) installed, a door slammed on a zombie you have been working
+With [DoorSlammer](../7dtd-ul-doorslammer) installed, a door slammed on a zombie you have been working
 on can knock it down. The door reads the zombie's meter as it stood before the slam and rolls
 `wl door`'s percentage per point — 10% per point from 1 point up by default, so a zombie you have
 hit four times goes down two slams in five. The ragdoll roll applies to that knockdown too. The
